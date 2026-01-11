@@ -14,7 +14,10 @@ app.post('/webhook/gh-issue-to-calendar-task', verifyGitHubSignature, async (c) 
   }
 
   const payload = await c.req.json();
-  console.log('Received webhook payload:', payload.changes)
+  if (payload.action !== 'edited') {
+    // Only "edited" actions are processed. For other action types, we return 200 as expected by GitHub to avoid delivery errors.
+    return c.text('Event action is not "edited"', 200)
+  }
 
   return c.text('Webhook received successfully')
 })

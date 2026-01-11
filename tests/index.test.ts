@@ -32,7 +32,7 @@ describe('GitHub Webhook', () => {
   })
 
   it('should respond with 200 for valid signature', async () => {
-    const payload = JSON.stringify({ action: 'opened', issue: { id: 123 } })
+    const payload = JSON.stringify({ action: 'edited', issue: { id: 123 } })
     const webhooks = new Webhooks({ secret })
     const signature = await webhooks.sign(payload)
 
@@ -65,5 +65,23 @@ describe('GitHub Webhook', () => {
     }, env)
 
     expect(response.status).toBe(400)
+  })
+
+  it('should response with 400 when event is not "edited"', async () => {
+    const payload = JSON.stringify({ action: 'opened', changes: {} })
+    const webhooks = new Webhooks({ secret })
+    const signature = await webhooks.sign(payload)
+
+    const response = await app.request('/webhook/gh-issue-to-calendar-task', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hub-Signature-256': signature,
+        'X-GitHub-Event': 'projects_v2_item'
+      },
+      body: payload
+    }, env)
+
+    expect(response.status).toBe(200)
   })
 })
