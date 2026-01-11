@@ -7,7 +7,7 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-app.post('/webhook', verifyGitHubSignature, async (c) => {
+app.post('/webhook/gh-issue-to-calendar-task', verifyGitHubSignature, async (c) => {
     const eventName = c.req.header('X-GitHub-Event')
     console.log(`Received event: ${eventName}`)
 
