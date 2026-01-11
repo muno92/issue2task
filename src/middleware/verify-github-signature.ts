@@ -18,11 +18,8 @@ export const verifyGitHubSignature: MiddlewareHandler<{ Bindings: Bindings }> = 
     }
 
     const payload = await c.req.text()
-
-    const webhooks = new Webhooks({ secret })
-
     try {
-        const isValid = await webhooks.verify(payload, signature)
+        const isValid = await new Webhooks({ secret }).verify(payload, signature)
         if (!isValid) {
             return c.json({ error: 'Invalid signature' }, 401)
         }
