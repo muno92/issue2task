@@ -41,11 +41,29 @@ describe('GitHub Webhook', () => {
       headers: {
         'Content-Type': 'application/json',
         'X-Hub-Signature-256': signature,
-        'X-GitHub-Event': 'issues'
+        'X-GitHub-Event': 'projects_v2_item'
       },
       body: payload
     }, env)
 
     expect(response.status).toBe(200)
+  })
+
+  it('should respond with 400 when event is not projects_v2_item', async () => {
+    const payload = JSON.stringify({ action: 'opened', issue: { id: 123 } })
+    const webhooks = new Webhooks({ secret })
+    const signature = await webhooks.sign(payload)
+
+    const response = await app.request('/webhook/gh-issue-to-calendar-task', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hub-Signature-256': signature,
+        'X-GitHub-Event': 'issues'
+      },
+      body: payload
+    }, env)
+
+    expect(response.status).toBe(400)
   })
 })

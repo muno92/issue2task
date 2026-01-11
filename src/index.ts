@@ -9,7 +9,9 @@ app.get('/', (c) => {
 
 app.post('/webhook/gh-issue-to-calendar-task', verifyGitHubSignature, async (c) => {
   const eventName = c.req.header('X-GitHub-Event')
-  console.log(`Received event: ${eventName}`)
+  if (eventName !== 'projects_v2_item') {
+    return c.text('Invalid event type', 400)
+  }
 
   const payload = await c.req.json();
   console.log('Received webhook payload:', payload.changes)
