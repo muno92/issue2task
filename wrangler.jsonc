@@ -17,7 +17,22 @@
 			"database_name": "issue2task",
 			"database_id": "37e24d82-4e54-4837-9c47-9856e487fe33"
 		}
-	]
+	],
+  "env": {
+    "dev": {
+      // If a custom domain is set, request.url uses that domain by default.
+      // We override it here to ensure the development host is used during local testing.
+      "routes": [],
+      // d1_database is not inherited from the base config, so we need to redefine it here.
+      "d1_databases": [
+        {
+          "binding": "issue2task",
+          "database_name": "issue2task",
+          "database_id": "37e24d82-4e54-4837-9c47-9856e487fe33"
+        }
+      ]
+    }
+  }
 	// "compatibility_flags": [
 	//   "nodejs_compat"
 	// ],
