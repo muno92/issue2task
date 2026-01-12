@@ -88,7 +88,7 @@ settings.get('/', async (c) => {
             border-color: #4285f4;
             background: #f8f9fa;
           }
-          .user-email {
+          .user-id {
             font-weight: 500;
             color: #333;
           }
@@ -118,7 +118,7 @@ settings.get('/', async (c) => {
             <div class="user-list">
               ${authenticatedUsers.map(user => `
                 <div class="user-item" onclick="window.location.href='/settings/tasklists/select?user_id=${encodeURIComponent(user.user_id)}'">
-                  <span class="user-email">${user.user_id}</span>
+                  <span class="user-id">${user.user_id}</span>
                   <span>→</span>
                 </div>
               `).join('')}

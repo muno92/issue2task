@@ -107,7 +107,7 @@ oauthCallback.get('/', async (c) => {
       return c.text('Failed to fetch user information', 500)
     }
 
-    const userInfo = await userInfoResponse.json() as { email: string; id: string }
+    const userInfo = await userInfoResponse.json() as { id: string }
 
     // Save tokens to D1
     const expiresAt = Date.now() + tokens.expires_in * 1000
@@ -124,7 +124,7 @@ oauthCallback.get('/', async (c) => {
       ) VALUES (?, ?, ?, ?, ?, ?)
     `)
       .bind(
-        userInfo.email,
+        userInfo.id,
         tokens.access_token,
         tokens.refresh_token || '',
         expiresAt,
@@ -174,13 +174,13 @@ oauthCallback.get('/', async (c) => {
           <div class="container">
             <h1 class="success">✓ Authentication Successful</h1>
             <div class="user-info">
-              <p><strong>Email:</strong> ${userInfo.email}</p>
+              <p><strong>Id:</strong> ${userInfo.id}</p>
             </div>
             <p>Redirecting to task list selection...</p>
           </div>
           <script>
             setTimeout(() => {
-              window.location.href = '/settings/tasklists/select?user_id=${encodeURIComponent(userInfo.email)}';
+              window.location.href = '/settings/tasklists/select?user_id=${encodeURIComponent(userInfo.id)}';
             }, 1500);
           </script>
         </body>
