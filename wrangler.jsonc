@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "gh-issue-to-calendar-task",
+	"name": "issue2task",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-01-10",
 	"d1_databases": [
