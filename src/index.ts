@@ -4,11 +4,15 @@ import auth from './routes/auth'
 import tasklists from './routes/tasklists'
 import settings from './routes/settings'
 import oauthCallback from './routes/oauth-callback'
+import {getInstallationAccessToken} from './utils/github-app-auth'
+import {getProjectItem} from './utils/github-api'
 
 type Bindings = {
   GOOGLE_CLIENT_ID: string
   GOOGLE_CLIENT_SECRET: string
   GOOGLE_API_KEY: string
+  GITHUB_APP_ID: string
+  GITHUB_PRIVATE_KEY: string
   issue2task: D1Database
 }
 
@@ -86,7 +90,7 @@ app.route('/settings/auth', auth)
 app.route('/settings/tasklists', tasklists)
 app.route('/google-callback', oauthCallback)
 
-app.post('/webhook/gh-issue-to-calendar-task', verifyGitHubSignature, async (c) => {
+app.post('/webhook', verifyGitHubSignature, async (c) => {
   const eventName = c.req.header('X-GitHub-Event')
   if (eventName !== 'projects_v2_item') {
     return c.text('Invalid event type', 400)
@@ -97,6 +101,31 @@ app.post('/webhook/gh-issue-to-calendar-task', verifyGitHubSignature, async (c) 
     // Only "edited" actions are processed. For other action types, we return 200 as expected by GitHub to avoid delivery errors.
     return c.text('Event action is not "edited"', 200)
   }
+
+  const installationToken = await getInstallationAccessToken(
+    c.env.GITHUB_APP_ID,
+    c.env.GITHUB_PRIVATE_KEY,
+    payload.installation.id
+  )
+
+  if (!installationToken) {
+    console.error('Failed to get installation access token')
+    return c.text('Authentication failed', 500)
+  }
+
+  // Fetch issue information from GitHub
+  const org = payload.organization.login
+  const projectNumber = payload.changes.field_value.project_number
+  const itemId = payload.projects_v2_item.id
+
+  const issue = await getProjectItem(org, projectNumber, itemId, installationToken)
+
+  if (!issue) {
+    console.error('Failed to fetch issue from GitHub')
+    return c.text('Failed to fetch issue', 500)
+  }
+
+  console.log('Issue fetched successfully:', issue)
 
   return c.text('Webhook received successfully')
 })
