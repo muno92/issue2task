@@ -1,5 +1,5 @@
 {
-  "name": "gh-issue-to-calendar-task",
+  "name": "issue2task",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
