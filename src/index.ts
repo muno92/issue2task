@@ -71,15 +71,10 @@ app.get('/', (c) => {
           .btn:hover {
             background: #357ae8;
           }
-          .logo {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-          }
         </style>
       </head>
       <body>
         <div class="container">
-          <div class="logo">📋 → ✅</div>
           <h1>GitHub Issues to Google Tasks</h1>
           <p>Automatically sync your GitHub issues with Google Tasks</p>
           <a href="/settings" class="btn">Go to Settings</a>
