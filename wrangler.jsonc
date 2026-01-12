@@ -3,6 +3,14 @@
 	"name": "issue2task",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-01-10",
+	"routes": [
+		{
+			"pattern": "issue2task.muno92.dev",
+			"custom_domain": true
+		}
+	],
+  "workers_dev": true,
+  "preview_urls": true,
 	"d1_databases": [
 		{
 			"binding": "issue2task",
