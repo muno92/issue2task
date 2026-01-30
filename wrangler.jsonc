@@ -18,6 +18,12 @@
 			"database_id": "37e24d82-4e54-4837-9c47-9856e487fe33"
 		}
 	],
+  "observability": {
+    "logs": {
+      "enabled": false,
+      "invocation_logs": true
+    }
+  },
   "env": {
     "dev": {
       // If a custom domain is set, request.url uses that domain by default.
