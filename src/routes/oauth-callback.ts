@@ -113,6 +113,19 @@ oauthCallback.get('/', async (c) => {
     const expiresAt = Date.now() + tokens.expires_in * 1000
     const now = Date.now()
 
+    // Check if we already have a refresh token for this user
+    // Google doesn't always return a refresh token on re-authentication
+    let refreshToken = tokens.refresh_token || ''
+    if (!refreshToken) {
+      const existing = await c.env.issue2task.prepare(
+        'SELECT refresh_token FROM oauth_tokens WHERE user_id = ?'
+      ).bind(userInfo.id).first<{ refresh_token: string }>()
+
+      if (existing?.refresh_token) {
+        refreshToken = existing.refresh_token
+      }
+    }
+
     await c.env.issue2task.prepare(`
       INSERT OR REPLACE INTO oauth_tokens (
         user_id,
@@ -126,7 +139,7 @@ oauthCallback.get('/', async (c) => {
       .bind(
         userInfo.id,
         tokens.access_token,
-        tokens.refresh_token || '',
+        refreshToken,
         expiresAt,
         now,
         now
